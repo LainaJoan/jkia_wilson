@@ -1,0 +1,144 @@
+<!DOCTYPE   html>
+<html>
+ <head>
+  <title>JKIA and Wilson Airport</title>
+  <meta charset="UTF-8">
+  <meta name= "viewport" content="width=device-width, initial-scale= 1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    #map {
+        height: 100vh; 
+
+    }
+    
+     .legend {
+    line-height: 18px;
+    color: #333;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 30px;
+    left: 10px;
+    z-index: 1000;
+    font-size: 13px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  }
+  .legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.8;
+  }
+
+  </style>
+
+ </head>
+ <body>
+    <div id="map"></div>
+    <div class="legend" id="legend">
+  <div><i style="background: blue;"></i> Airport Polygons</div>
+  <div><i style="background: red;"></i> Airport Lines</div>
+  <div><i style="background: green;"></i> Airport Points</div>
+  <div><i style="background: gray;"></i> Nairobi County</div>
+  <div><i style="background: #222;"></i> Major Roads</div>
+  <div><i style="background: #666;"></i> Railway</div>
+</div>
+   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"> </script>
+   <script>
+    var map = L.map('map').setView([-1.3225, 36.9245], 9);
+    var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{y}/{x}.png",
+    { attribution : "&copy; OpenStreetMap distributors" }
+
+    ).addTo(map);
+   
+    // 1. Airport Polygons (e.g. terminals, aprons)
+  fetch("airportPolygons.geojson")
+    .then(res => res.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: {
+          color: "blue",
+          weight: 1,
+          fillOpacity: 0.5
+        }
+      }).addTo(map);
+    });
+
+  // 2. Airport Lines (e.g. runways, taxiways)
+  fetch("airportLines.geojson")
+    .then(res => res.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: {
+          color: "red",
+          weight: 2
+        }
+      }).addTo(map);
+    });
+
+  // 3. Airport Points (e.g. terminal, helipad, hangar)
+  fetch("airportPoints.geojson")
+    .then(res => res.json())
+    .then(data => {
+      L.geoJSON(data, {
+        pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng, {
+            radius: 6,
+            fillColor: "#008000",
+            color: "#004400",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          });
+        },
+        onEachFeature: function (feature, layer) {
+          if (feature.properties && feature.properties.name) {
+            layer.bindPopup(`<strong>${feature.properties.name}</strong>`);
+          }
+        }
+      }).addTo(map);
+    });
+
+  // 4. Nairobi County boundary
+  fetch("nairobiCounty.geojson")
+    .then(res => res.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: {
+          color: "gray",
+          weight: 1,
+          fillOpacity: 0
+        }
+      }).addTo(map);
+    });
+
+  // 5. Major Roads
+  fetch("majorRoads.geojson")
+    .then(res => res.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: {
+          color: "#222",
+          weight: 2
+          
+        }
+      }).addTo(map);
+    });
+
+  // 6. Railway
+  fetch("Railway.geojson")
+    .then(res => res.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: {
+          color: "#666",
+          weight: 2,
+          dashArray: "3, 6"
+        }
+      }).addTo(map);
+    });
+   </script>
+ </body>
+</html>
