@@ -27,21 +27,27 @@
                 L.marker([-1.321111, 36.815556]).addTo(map)
                   .bindPopup("Wilson Airport")
 
-                 fetch('airportPolygons.geojson')
-                   .then(response => response.json())
-                   .then(data => {
-                     L.geoJSON(data, {style:{color:"red"}}).addTo(map);
-  }); 
-               fetch('airportPoints.geojson')
-                   .then(response => response.json())
-                   .then(data => {
-                     L.geoJSON(data, {style:{color:"blue"}}).addTo(map);
-  }); 
-                fetch('airportLines.geojson')
-                   .then(response => response.json())
-                   .then(data => {
-                     L.geoJSON(data, {style:{color:"green"}}).addTo(map);
-  }); 
+                fetch('airportPolygons.geojson')
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data, { style: { color: 'red', weight: 2 } }).addTo(map);
+  })
+  .catch(error => console.error("Polygon error:", error));
+
+fetch('airportPoints.geojson')
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data).addTo(map);
+  })
+  .catch(error => console.error("Points error:", error));
+
+fetch('airportLines.geojson')
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data, { style: { color: 'blue', weight: 2 } }).addTo(map);
+  })
+  .catch(error => console.error("Lines error:", error));
+
             </script>
     
 
