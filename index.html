@@ -30,17 +30,17 @@
                  fetch('airportPolygons.geojson')
                    .then(response => response.json())
                    .then(data => {
-                     L.geoJSON(data).addTo(map);
+                     L.geoJSON(data, {style:{color:"red"}}).addTo(map);
   }); 
                fetch('airportPoints.geojson')
                    .then(response => response.json())
                    .then(data => {
-                     L.geoJSON(data).addTo(map);
+                     L.geoJSON(data, {style:{color:"blue"}}).addTo(map);
   }); 
                 fetch('airportLines.geojson')
                    .then(response => response.json())
                    .then(data => {
-                     L.geoJSON(data).addTo(map);
+                     L.geoJSON(data, {style:{color:"green"}}).addTo(map);
   }); 
             </script>
     
