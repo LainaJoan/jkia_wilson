@@ -26,6 +26,12 @@
                   .openPopup()
                 L.marker([-1.321111, 36.815556]).addTo(map)
                   .bindPopup("Wilson Airport")
+
+                 fetch('airportPolygons.geojson')
+                   .then(response => response.json())
+                   .then(data => {
+                     L.geoJSON(data).addTo(map);
+  }); 
             </script>
     
 
