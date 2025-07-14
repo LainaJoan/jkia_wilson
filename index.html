@@ -16,16 +16,16 @@
        
             <script  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"> </script>
             <script>
-                var map = L.map('map').setView([-1.286389,36.817223], 13)
+                var map = L.map('map').setView([-1.286389,36.817223], 10)
                 var osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{
                     attribution: "&copy  OpenStreetMap contributors"
                 } ).addTo(map);
 
                 L.marker([-1.319167,36.9275]).addTo(map)
-                  .bindPopup("Jomo Kenyatta International Airport(JKIA)")
-                  .openPopup()
+                  .bindPopup("Jomo Kenyatta International Airport(JKIA)");
+                  
                 L.marker([-1.321111, 36.815556]).addTo(map)
-                  .bindPopup("Wilson Airport")
+                  .bindPopup("Wilson Airport");
 
                 fetch('airportPolygons.geojson')
                   .then(response => response.json())
@@ -34,22 +34,23 @@
   })
                      .catch(error => console.error("Polygon error:", error));
 
-                fetch('airportPoints.geojson')
-                      .then(response => response.json())
-                      .then(data => {
-                         L.geoJSON(data, 
-                             {
-                           pointToLayer: function (feature, latlng) {
-                           return L.circleMarker(latlng, {
-                            radius: 8,
-                            fillColor: "blue",
-                            color: "#000",
-                             weight: 1,
-                             opacity: 1,
-                            fillOpacity: 0.7
-        })
-                         .addTo(map); })
-                  .catch(error => console.error("Points error:", error));
+          fetch('airportPoints.geojson')
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data, {
+      pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, {
+          radius: 6,
+          fillColor: 'red',
+          color: 'darkred',
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.8
+        });
+      }
+    }).addTo(map);
+  })
+  .catch(error => console.error("Points error:", error));
 
                 fetch('airportLines.geojson')
                   .then(response => response.json())
@@ -57,6 +58,19 @@
                      L.geoJSON(data, { style: { color: 'blue', weight: 2 } }).addTo(map);
   })
                        .catch(error => console.error("Lines error:", error));
+  var legend = L.control({ position: 'bottomright' });
+
+legend.onAdd = function (map) {
+  var div = L.DomUtil.create('div', 'info legend');
+  div.innerHTML += "<h4>Legend</h4>";
+  div.innerHTML += '<i style="background: red; width: 10px; height: 10px; display: inline-block; margin-right: 5px;"></i> Airport Boundary<br>';
+  div.innerHTML += '<i style="background: blue; width: 10px; height: 10px; display: inline-block; margin-right: 5px;"></i> Airport Lines Runways / Lines<br>';
+  div.innerHTML += '<i style="background: darkred; border-radius: 50%; width: 10px; height: 10px; display: inline-block; margin-right: 5px;"></i> Airport Points<br>';
+  return div;
+};
+
+legend.addTo(map);
+
 
             </script>
     
